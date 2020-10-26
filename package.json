@@ -1,0 +1,32 @@
+{
+  "name": "play-us_back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmdals9974/PlayUs_Back.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tmdals9974/PlayUs_Back/issues"
+  },
+  "homepage": "https://github.com/tmdals9974/PlayUs_Back#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "connect-history-api-fallback": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.10"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
