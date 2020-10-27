@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt')
+const saltRounds = 10
 
 // Define Schemes
 const userSchema = new mongoose.Schema({
@@ -10,26 +12,28 @@ const userSchema = new mongoose.Schema({
         timestamps: true
     });
 
-// userSchema.statics.create = function (payload) {
-//     const user = new this(payload); // this === Model
-//     return user.save();
-// };
+userSchema.statics.create = async function (payload) {
+    const user = new this(payload); // this === Model
+    try {
+        user.password = await getHashPassword(user.password);
+    }
+    catch (err) {
+        throw err;
+    }
+    return user.save();
+};
 
-// userSchema.statics.findAll = function () {
-//     return this.find({});
-// };
+function getHashPassword(password) {
+    return new Promise((resolve, reject) => {
+        bcrypt.genSalt(saltRounds, (err, salt) => {
+            if (err) reject(err);
 
-// userSchema.statics.findOneByuserid = function (userid) {
-//     return this.findOne({ userid });
-// };
-
-// userSchema.statics.updateByuserid = function (userid, payload) {
-//     // { new: true }: 원본이 아닌 수정된 값을 리턴해줌. 기본값은 false임.
-//     return this.findOneAndUpdate({ userid }, payload, { new: true });
-// };
-
-// userSchema.statics.deleteByuserid = function (userid) {
-//     return this.remove({ userid });
-// };
+            bcrypt.hash(password, salt, (err, hash) => {
+                if (err) reject(err);
+                resolve(hash);
+            });
+        });
+    });
+}
 
 module.exports = mongoose.model('user', userSchema);
