@@ -1,6 +1,11 @@
+require('dotenv').config();
+
 const mongoose = require('mongoose');
+const resResult = require('../models/resResult');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
+const secretKey = process.env.SECRET_KEY;
 
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true, lowercase: true },
@@ -26,12 +31,14 @@ userSchema.statics.login = function (payload) {
     return new Promise((resolve, reject) => {
         this.findOne({ email: payload.email })
             .then(user => {
-                if (!user) throw { err: 'User not found' };
-                return bcrypt.compare(payload.password, user.password).catch(err => { return reject(err) });
+                if (!user) throw { status: '404', msg: 'User not found' };
+                return bcrypt.compare(payload.password, user.password)
             })
             .then(result => {
-                resolve(result);
+                if (!result) throw { status: '401', msg: 'Password Mismatch' };
+                return jwt.sign({ email: payload.email }, secretKey, { expiresIn: '7d' });
             })
+            .then(token => resolve(token))
             .catch(err => { return reject(err) });
     })
 };

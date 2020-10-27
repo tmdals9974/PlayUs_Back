@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const User = require('../models/user');
+const resResult = require('../models/resResult');
 
 router.get('/', (req, res) => {
     User.find({})
@@ -36,17 +37,18 @@ router.get('/check/:email', (req, res) => {
 
 router.post('/login', (req, res) => {
     User.login(req.body)
-        .then((result) => {
-            if (!result) return res.status(401).json(resResult(false, 'Password Mismatch'));
-            res.json(resResult(true));
+        .then((token) => {
+            res.cookie("access_token", token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }).send(resResult(true))
         })
-        .catch(err => res.status(500).send(err));
+        .catch(err => {
+            if (err.status)
+                return res.status(err.status).send(err.msg);
+            res.status(500).send(err);
+        });
 })
 
-function resResult(success, msg, details) {
-    return {
-        success, msg, details
-    }
-}
+router.post('/logout', (req, res) => {
+    res.cookie("access_token", null, { httpOnly: true, maxAge: 0 }).send(resResult(true));
+})
 
 module.exports = router;
