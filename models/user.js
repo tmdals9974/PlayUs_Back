@@ -1,7 +1,6 @@
 require('dotenv').config();
 
 const mongoose = require('mongoose');
-const resResult = require('../models/resResult');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
