@@ -1,0 +1,35 @@
+### 모든 유저 확인
+GET http://localhost:4500/users HTTP/1.1
+
+### 회원가입
+POST http://localhost:4500/users HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "tmdals9974@naver.com.test",
+    "password" : "playus12!"
+}
+
+### 로그인
+POST http://localhost:4500/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "email" : "tmdals9974@naver.com.test",
+    "password" : "playus12!"
+}
+
+### 프로젝트 조회
+GET http://localhost:4500/projects HTTP/1.1
+
+### 프로젝트 생성
+POST http://localhost:4500/projects HTTP/1.1
+Content-Type: application/json
+
+{
+    "name" : "sampleProject" 
+    //returnType default 0, lock default false
+}
+
+### 프로젝트 제거
+DELETE http://localhost:4500/projects/5f9b71fb26aaa610d039e747 HTTP/1.1
