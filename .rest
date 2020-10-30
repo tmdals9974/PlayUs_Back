@@ -32,4 +32,4 @@ Content-Type: application/json
 }
 
 ### 프로젝트 제거
-DELETE http://localhost:4500/projects/5f9b71fb26aaa610d039e747 HTTP/1.1
+DELETE http://localhost:4500/projects/5f9aeaa5532e112b30c20831 HTTP/1.1

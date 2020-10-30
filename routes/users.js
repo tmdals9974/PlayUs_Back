@@ -42,9 +42,10 @@ router.get('/check/:email', (req, res) => {
 
 router.post('/login', (req, res) => {
     User.login(req.body)
-        .then((token) => {
+        .then(async (token) =>  {
             setTokenCookie(res, token);
-            res.json(resResult(true));
+            var project = await Project.find({ user: req.body._id });
+            res.json(resResult(true, undefined, project));
         })
         .catch(err => {
             if (err.status)
