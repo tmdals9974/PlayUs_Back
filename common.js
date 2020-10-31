@@ -35,7 +35,7 @@ function generateToken(_id, email) {
 async function verifyToken(req, res, next) {
     try {
         const accessToken = req.cookies.access_token;
-        if (!accessToken) return next();
+        if (!accessToken) return res.status(401).json(resResult(false, 'unauthorized'));
         const decoded = jwt.verify(accessToken, secretKey);
 
         if (decoded) {

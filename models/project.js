@@ -10,5 +10,14 @@ const projectSchema = new mongoose.Schema({
         timestamps: true
     });
 
+projectSchema.methods.getPublicFields = function () {
+    var returnObject = {
+        name: this.name,
+        returntype: this.returntype,
+        lock: this.lock
+    };
+    return returnObject;
+};
+
 projectSchema.index({ user: 1, name: 1 }, { unique: true });
 module.exports = mongoose.model('project', projectSchema);

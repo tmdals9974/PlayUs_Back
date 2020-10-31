@@ -7,6 +7,7 @@ router.get('/', (req, res) => {
     User.find({})
         .then((users) => {
             if (!users.length) return res.status(204).json(resResult(false, 'User not found'));
+            users.forEach((user, index) => users[index] = user.getPublicFields());
             res.json(resResult(true, undefined, users));
         })
         .catch(err => res.status(500).json(resResult(false, undefined, err)));
@@ -14,7 +15,7 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     User.join(req.body)
-        .then(user => res.status(201).json(resResult(true, undefined, user)))
+        .then(user => res.status(201).json(resResult(true, undefined, user.getPublicFields())))
         .catch(err => {
             if (err.code === 11000)
                 res.status(409).json(resResult(false, '사용중인 이메일입니다.'));
@@ -44,10 +45,12 @@ router.post('/login', (req, res) => {
     User.login(req.body)
         .then(async (token) =>  {
             setTokenCookie(res, token);
-            var project = await Project.find({ user: req.body._id });
-            res.json(resResult(true, undefined, project));
+            var projects = await Project.find({ user: req.body._id });
+            projects.forEach((project, index) => projects[index] = project.getPublicFields());
+            res.json(resResult(true, undefined, projects));
         })
         .catch(err => {
+            console.log(err);
             if (err.status)
                 return res.status(err.status).json(resResult(false, err.msg));
             res.status(500).json(resResult(false, undefined, err));

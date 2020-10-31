@@ -13,6 +13,15 @@ const userSchema = new mongoose.Schema({
         timestamps: true
     });
 
+userSchema.methods.getPublicFields = function () {
+    var returnObject = {
+        email: this.email,
+        password: this.password,
+        receiveMail: this.receiveMail
+    };
+    return returnObject;
+};
+
 userSchema.statics.join = async function (payload) {
     const user = new this(payload); // this === Model
     try {
