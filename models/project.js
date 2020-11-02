@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const projectSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     name: { type: String, required: true },
+    content: { type: String },
     returntype: { type: Number, default: 0, }, //0: JSON  1: XML
     lock: { type: Boolean, default: false },
 },
@@ -13,6 +14,7 @@ const projectSchema = new mongoose.Schema({
 projectSchema.methods.getPublicFields = function () {
     var returnObject = {
         name: this.name,
+        content: this.content,
         returntype: this.returntype,
         lock: this.lock
     };
