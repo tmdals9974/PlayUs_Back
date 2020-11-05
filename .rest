@@ -30,9 +30,15 @@ Content-Type: application/json
     "name" : "sampleProject3224" ,
     "returnType" : 0,
     "lock" : false,
-    "content" : "this is sampleProject"
+    "content" : "this is sampleProject\ncomm"
     //returnType default 0, lock default false
 }
 
 ### 프로젝트 제거
-DELETE http://localhost:4500/projects/5f9aeaa5532e112b30c20831 HTTP/1.1
+DELETE http://localhost:4500/projects/sampleProject224 HTTP/1.1
+
+### 프로젝트 통계
+GET http://localhost:4500/projects/stats HTTP/1.1
+
+### 테스트
+GET http://localhost:4500/test HTTP/1.1

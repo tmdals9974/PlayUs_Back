@@ -3,6 +3,20 @@ const jwt = require('jsonwebtoken');
 const secretKey = process.env.SECRET_KEY;
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const MongoClient = require("mongodb").MongoClient;
+
+function getConnections(db) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(process.env.MONGODB_URI, { useUnifiedTopology: true }, function (err, client) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(client.db(db));
+            }
+        })
+    });
+}
 
 function resResult(success, msg, details) {
     return {
@@ -64,4 +78,4 @@ function setTokenCookie(res, token) {
     else res.cookie(cookieName, token, { httpOnly: true, maxAge: 1000 * 60 * 40 });
 }
 
-module.exports = { resResult, getHashPassword, generateToken, verifyToken, setTokenCookie };
+module.exports = { getConnections, resResult, getHashPassword, generateToken, verifyToken, setTokenCookie };

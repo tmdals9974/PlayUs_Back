@@ -18,7 +18,7 @@ app.use('/users', require('./routes/users'));
 app.use('/projects', require('./routes/projects'));
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
+mongoose.connect(process.env.MONGOOSE_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
     .then(() => console.log('Successfully connected to mongodb'))
     .catch(e => console.error(e));
 
