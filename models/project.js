@@ -13,6 +13,7 @@ const projectSchema = new mongoose.Schema({
 
 projectSchema.methods.getPublicFields = function () {
     var returnObject = {
+        _id: this._id,
         name: this.name,
         content: this.content,
         returntype: this.returntype,

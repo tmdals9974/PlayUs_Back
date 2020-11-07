@@ -41,7 +41,7 @@ router.get('/stats', verifyToken, (req, res) => {
             if (!projects) res.json(resResult(false, 'Project not found'));
             var stats = [];
             for (const index in projects) {
-                var mongo = await getConnections((projects[index]._id).toString()).stats();
+                var mongo = await getConnections((projects[index]._id).toString());
                 var stat = await mongo.stats();
                 stats.push(stat);
                 delete stat, mongo;
