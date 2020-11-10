@@ -50,3 +50,6 @@ Content-Type: application/json
 {
     "collectionName" : "sampleCollections4"
 }
+
+###프로젝트 컬렉션 제거
+DELETE http://localhost:4500/projects/5fa093a34d65963234bdeba7/collections?collectionName=sampleCollections4 HTTP/1.1

@@ -80,4 +80,15 @@ router.post('/:projectId/collections', verifyToken, async (req, res) => {
     }
 })
 
+router.delete('/:projectId/collections', verifyToken, async (req, res) => {
+    try {
+        var mongo = await getConnections(req.params.projectId.toString());
+        var collection = await mongo.dropCollection(req.query.collectionName);
+        res.json(resResult(true, undefined, collection));
+    }
+    catch (err) {
+        res.status(500).json(resResult(false, undefined, err));
+    }
+})
+
 module.exports = router;
