@@ -35,10 +35,10 @@ Content-Type: application/json
 }
 
 ### 프로젝트 제거
-DELETE http://localhost:4500/projects/sampleProject224 HTTP/1.1
+DELETE http://localhost:4500/projects/ HTTP/1.1
 
 ### 프로젝트 통계
 GET http://localhost:4500/projects/stats HTTP/1.1
 
-### 테스트
-GET http://localhost:4500/test HTTP/1.1
+### 프로젝트 컬렉션 목록
+GET http://localhost:4500/projects/5fa093a34d65963234bdeba7/collections

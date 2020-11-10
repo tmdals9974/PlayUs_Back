@@ -23,18 +23,6 @@ router.post('/', verifyToken, async (req, res) => {
         });
 });
 
-router.delete('/:name', verifyToken, (req, res) => {
-    Project.findOneAndRemove({ user: req.user._id, name: req.params.name })
-        .then(async (project) => {
-            if (!project) res.json(resResult(false, 'Project not found'));
-
-            var mongo = await getConnections(project._id.toString());
-            var isDroped = await mongo.dropDatabase(); //true false
-            res.json(resResult(true, undefined, project));
-        })
-        .catch(err => res.status(500).json(resResult(false, undefined, err)));
-});
-
 router.get('/stats', verifyToken, (req, res) => {
     Project.find({ user: req.user._id }, '_id')
         .then(async (projects) => {
@@ -52,5 +40,32 @@ router.get('/stats', verifyToken, (req, res) => {
 })
 
 
+
+router.delete('/:projectId', verifyToken, (req, res) => {
+    Project.findOneAndRemove({ _id: req.params.projectId, user: req.user._id })
+        .then(async (project) => {
+            if (!project) res.json(resResult(false, 'Project not found'));
+
+            var mongo = await getConnections(project._id.toString());
+            var isDroped = await mongo.dropDatabase(); //true false
+            res.json(resResult(true, undefined, project));
+        })
+        .catch(err => res.status(500).json(resResult(false, undefined, err)));
+});
+
+router.get('/:projectId/collections', verifyToken, async (req, res) => {
+    try {
+        var mongo = await getConnections(req.params.projectId.toString());
+        var collections = await mongo.listCollections().toArray();
+        var results = [];
+        for (const index in collections) {
+            if (collections[index].type === 'collection') results.push(collections[index].name);
+        }
+        res.json(resResult(true, undefined, results));
+    }
+    catch (err) {
+        res.status(500).json(resResult(false, undefined, err));
+    }
+})
 
 module.exports = router;
