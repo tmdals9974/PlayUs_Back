@@ -68,4 +68,16 @@ router.get('/:projectId/collections', verifyToken, async (req, res) => {
     }
 })
 
+router.post('/:projectId/collections', verifyToken, async (req, res) => {
+    try {
+        var mongo = await getConnections(req.params.projectId.toString());
+        await mongo.createCollection(req.body.collectionName);
+        res.json(resResult(true));
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json(resResult(false, undefined, err));
+    }
+})
+
 module.exports = router;

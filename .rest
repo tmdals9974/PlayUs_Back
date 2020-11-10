@@ -42,3 +42,11 @@ GET http://localhost:4500/projects/stats HTTP/1.1
 
 ### 프로젝트 컬렉션 목록
 GET http://localhost:4500/projects/5fa093a34d65963234bdeba7/collections
+
+### 프로젝트 컬렉션 추가
+POST http://localhost:4500/projects/5fa093a34d65963234bdeba7/collections HTTP/1.1
+Content-Type: application/json
+
+{
+    "collectionName" : "sampleCollections4"
+}
