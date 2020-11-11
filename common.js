@@ -5,14 +5,14 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const MongoClient = require("mongodb").MongoClient;
 
-function getConnections(db) {
+function getConnections() {
     return new Promise((resolve, reject) => {
         MongoClient.connect(process.env.MONGODB_URI, { useUnifiedTopology: true }, function (err, client) {
             if (err) {
                 reject(err);
             }
             else {
-                resolve(client.db(db));
+                resolve(client);
             }
         })
     });
@@ -73,7 +73,7 @@ async function verifyToken(req, res, next) {
 }
 
 function setTokenCookie(res, token) {
-    var cookieName = "access_token";
+    const cookieName = "access_token";
     if (token === null) res.cookie(cookieName, null, { httpOnly: true, maxAge: 0 });
     else res.cookie(cookieName, token, { httpOnly: true, maxAge: 1000 * 60 * 40 });
 }

@@ -45,7 +45,7 @@ router.post('/login', (req, res) => {
     User.login(req.body)
         .then(async (token) =>  {
             setTokenCookie(res, token);
-            var projects = await Project.find({ user: req.body._id });
+            let projects = await Project.find({ user: req.body._id });
             projects.forEach((project, index) => projects[index] = project.getPublicFields());
             res.json(resResult(true, undefined, projects));
         })

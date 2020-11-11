@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     });
 
 userSchema.methods.getPublicFields = function () {
-    var returnObject = {
+    const returnObject = {
         email: this.email,
         password: this.password,
         receiveMail: this.receiveMail
