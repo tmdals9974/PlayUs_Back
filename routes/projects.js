@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Project = require('../models/project');
+const mongodb = require("mongodb");
 const { getConnections, resResult, verifyToken } = require('../common');
 
 router.get('/', verifyToken, (req, res) => {
@@ -27,11 +28,11 @@ router.get('/stats', verifyToken, (req, res) => {
     Project.find({ user: req.user._id }, '_id')
         .then(async (projects) => {
             if (!projects) res.json(resResult(false, 'Project not found'));
-            let stats = [];
+            const stats = [];
             for (const index in projects) {
-                let mongo = await getConnections();
-                let db = await mongo.db((projects[index]._id).toString());
-                let stat = await db.stats();
+                const mongo = await getConnections();
+                const db = await mongo.db((projects[index]._id).toString());
+                const stat = await db.stats();
                 stats.push(stat);
                 await mongo.close();
             }
@@ -49,8 +50,8 @@ router.delete('/:projectId', verifyToken, (req, res) => {
 
             try {
                 var mongo = await getConnections();
-                let db = await mongo.db(project._id.toString());
-                let isDroped = await db.dropDatabase(); //true false
+                const db = await mongo.db(project._id.toString());
+                const isDroped = await db.dropDatabase(); //true false
                 res.json(resResult(true, undefined, project));
             }
             catch (err) {
@@ -66,9 +67,9 @@ router.delete('/:projectId', verifyToken, (req, res) => {
 router.get('/:projectId/collections', verifyToken, async (req, res) => {
     try {
         var mongo = await getConnections();
-        let db = await mongo.db(req.params.projectId.toString());
-        let collections = await db.listCollections().toArray();
-        let results = [];
+        const db = await mongo.db(req.params.projectId.toString());
+        const collections = await db.listCollections().toArray();
+        const results = [];
         for (const index in collections) {
             if (collections[index].type === 'collection') results.push(collections[index].name);
         }
@@ -85,7 +86,7 @@ router.get('/:projectId/collections', verifyToken, async (req, res) => {
 router.post('/:projectId/collections', verifyToken, async (req, res) => {
     try {
         var mongo = await getConnections();
-        let db = await mongo.db(req.params.projectId.toString());
+        const db = await mongo.db(req.params.projectId.toString());
         await db.createCollection(req.body.collectionName);
         res.json(resResult(true));
     }
@@ -98,11 +99,28 @@ router.post('/:projectId/collections', verifyToken, async (req, res) => {
 })
 
 router.delete('/:projectId/collections', verifyToken, async (req, res) => {
+    if (!req.query.collectionName) return res.status(400).json(resResult(false, 'collectionName이 필요합니다.'));
     try {
         var mongo = await getConnections();
-        let db = await mongo.db(req.params.projectId.toString());
-        let collection = await db.dropCollection(req.query.collectionName);
+        const db = await mongo.db(req.params.projectId.toString());
+        const collection = await db.dropCollection(req.query.collectionName);
         res.json(resResult(true, undefined, collection));
+    }
+    catch (err) {
+        res.status(500).json(resResult(false, undefined, err));
+    }
+    finally {
+        mongo.close();
+    }
+})
+
+router.get('/:projectId/:collectionName/document', verifyToken, async (req, res) => {
+    try {
+        var mongo = await getConnections();
+        const db = await mongo.db(req.params.projectId.toString());
+        const collection = await db.collection(req.params.collectionName.toString());
+        const result = await collection.find({}).toArray();
+        res.json(resResult(true, undefined, result));
     }
     catch (err) {
         res.status(500).json(resResult(false, undefined, err));
