@@ -130,4 +130,20 @@ router.get('/:projectId/:collectionName/document', verifyToken, async (req, res)
     }
 })
 
+router.post('/:projectId/:collectionName/document', verifyToken, async (req, res) => {
+    try {
+        var mongo = await getConnections();
+        const db = await mongo.db(req.params.projectId.toString());
+        const collection = await db.collection(req.params.collectionName.toString());
+        const result = Array.isArray(req.body) ? await collection.insertMany(req.body) : await collection.insertOne(req.body);
+        res.json(resResult(true, undefined, result));
+    }
+    catch (err) {
+        res.status(500).json(resResult(false, undefined, err));
+    }
+    finally {
+        mongo.close();
+    }
+})
+
 module.exports = router;
