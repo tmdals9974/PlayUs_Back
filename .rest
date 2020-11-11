@@ -71,3 +71,6 @@ Content-Type: application/json
         "age" : "13"
     }
 ]
+
+### 프로젝트 컬렉션 document id로 제거
+DELETE  http://localhost:4500/projects/5fa093a34d65963234bdeba7/sampleCollection/document?documentId=5fab84663b019609a0ed96dc HTTP/1.1

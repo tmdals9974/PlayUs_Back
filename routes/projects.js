@@ -146,4 +146,21 @@ router.post('/:projectId/:collectionName/document', verifyToken, async (req, res
     }
 })
 
+router.delete('/:projectId/:collectionName/document', verifyToken, async (req, res) => {
+    if (!req.query.documentId) return res.status(400).json(resResult(false, 'documentId가 필요합니다.'));
+    try {
+        var mongo = await getConnections();
+        const db = await mongo.db(req.params.projectId.toString());
+        const collection = await db.collection(req.params.collectionName.toString());
+        const result = await collection.deleteOne({ _id : new mongodb.ObjectID(req.query.documentId) });
+        res.json(resResult(true, undefined, result));
+    }
+    catch (err) {
+        res.status(500).json(resResult(false, undefined, err));
+    }
+    finally {
+        mongo.close();
+    }
+})
+
 module.exports = router;
