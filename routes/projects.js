@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Project = require('../models/project');
 const mongodb = require("mongodb");
 const { getConnections, resResult, verifyToken } = require('../common');
+const validateCollection = 'playus_secret_validate_collection';
 
 router.get('/', verifyToken, (req, res) => {
     Project.find({ user: req.user._id })
@@ -15,8 +16,20 @@ router.get('/', verifyToken, (req, res) => {
 
 router.post('/', verifyToken, async (req, res) => {
     new Project({ user: req.user._id, ...req.body }).save()
-        .then(project => {
+        .then(async project => {
             res.json(resResult(true, undefined, project.getPublicFields()));
+
+            try {
+                var mongo = await getConnections();
+                const db = await mongo.db(req.body.name.toString());
+                await db.createCollection(validateCollection);
+            }
+            catch (err) {
+                throw err;
+            }
+            finally {
+                mongo.close();
+            }
         })
         .catch(err => {
             if (err.code === 11000) res.status(409).json(resResult(false, '동일한 프로젝트 이름이 존재합니다.'));
