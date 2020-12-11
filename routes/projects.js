@@ -17,12 +17,12 @@ router.get('/', verifyToken, (req, res) => {
 router.post('/', verifyToken, async (req, res) => {
     new Project({ user: req.user._id, ...req.body }).save()
         .then(async project => {
-            res.json(resResult(true, undefined, project.getPublicFields()));
 
             try {
                 var mongo = await getConnections();
                 const db = await mongo.db(req.body.name.toString());
                 await db.createCollection(validateCollection);
+                res.json(resResult(true, undefined, project.getPublicFields()));
             }
             catch (err) {
                 throw err;
