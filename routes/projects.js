@@ -20,7 +20,7 @@ router.post('/', verifyToken, async (req, res) => {
 
             try {
                 var mongo = await getConnections();
-                const db = await mongo.db(req.body.name.toString());
+                const db = await mongo.db(project._id.toString());
                 await db.createCollection(validateCollection);
                 res.json(resResult(true, undefined, project.getPublicFields()));
             }
@@ -101,6 +101,13 @@ router.post('/:projectId/collections', verifyToken, async (req, res) => {
         var mongo = await getConnections();
         const db = await mongo.db(req.params.projectId.toString());
         await db.createCollection(req.body.collectionName);
+
+        const collection = await db.collection(validateCollection);
+        const result = await collection.insertOne({ 
+            collectionName: req.body.collectionName,
+            collectionRules: [ ...req.body.collectionRules ]
+        });
+
         res.json(resResult(true));
     }
     catch (err) {
