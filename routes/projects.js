@@ -154,8 +154,52 @@ router.post('/:projectId/:collectionName/document', verifyToken, async (req, res
     try {
         var mongo = await getConnections();
         const db = await mongo.db(req.params.projectId.toString());
+        const vdCollection = await db.collection(validateCollection);
+        const rules = await vdCollection.findOne({collectionName: req.params.collectionName});
+        let insertValue = {};
+        for (let i=0, rulesLength = rules.collectionRules.length; i<rulesLength; i++) {
+            let rule = rules.collectionRules[i];
+
+            if (req.body[rule.name] === undefined) {
+                if (rule.default === undefined) 
+                    continue;
+                insertValue[rule.name] = rule.default;
+            }
+            else {
+                if (req.body[rule.name] === '') 
+                    insertValue[rule.name] = rule.default;
+                else {
+                    switch (rule.type) {
+                        case 'String':
+                            insertValue[rule.name] = req.body[rule.name];
+                            break;
+                        case 'Number':
+                            if (isNaN(parseInt(req.body[rule.name])))
+                                throw `type error : ${rule.name} is not ${rule.type}`;
+                            insertValue[rule.name] = parseInt(req.body[rule.name]);
+                            break;
+                        case 'Boolean':
+                            if (!(req.body[rule.name] === 'true' || req.body[rule.name] === 'false') && typeof(req.body[rule.name]) !== 'boolean')
+                                throw `type error : ${rule.name} is not ${rule.type}`;
+                            insertValue[rule.name] = req.body[rule.name] === 'true';
+                            break;
+                        case 'Array':
+                            if (!Array.isArray(req.body[rule.name]))
+                                throw `type error : ${rule.name} is not ${rule.type}`;
+                            insertValue[rule.name] = req.body[rule.name];
+                            break;
+                        case 'Object':
+                            if (!(typeof req.body[rule.name] === 'object' && req.body[rule.name] !== null))
+                                throw `type error : ${rule.name} is not ${rule.type}`;
+                            insertValue[rule.name] = req.body[rule.name];
+                            break;
+                    }
+                }
+            }
+        }
+
         const collection = await db.collection(req.params.collectionName.toString());
-        const result = Array.isArray(req.body) ? await collection.insertMany(req.body) : await collection.insertOne(req.body);
+        const result = await collection.insertOne(insertValue);
         res.json(resResult(true, undefined, result));
     }
     catch (err) {

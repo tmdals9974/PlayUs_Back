@@ -41,10 +41,10 @@ DELETE http://localhost:4500/projects/5fa093a34d65963234bdeba7 HTTP/1.1
 GET http://localhost:4500/projects/stats HTTP/1.1
 
 ### 프로젝트 컬렉션 목록
-GET http://localhost:4500/projects/5fa093a34d65963234bdeba7/collections
+GET http://localhost:4500/projects/5facb7e617bf6c32c037ef10/collections
 
 ### 프로젝트 컬렉션 추가
-POST http://localhost:4500/projects/5fa093a34d65963234bdeba7/collections HTTP/1.1
+POST http://localhost:4500/projects/5facb7e617bf6c32c037ef10/collections HTTP/1.1
 Content-Type: application/json
 
 {
@@ -52,25 +52,18 @@ Content-Type: application/json
 }
 
 ### 프로젝트 컬렉션 제거
-DELETE http://localhost:4500/projects/5fa093a34d65963234bdeba7/collections?collectionName=sampleCollections4 HTTP/1.1
+DELETE http://localhost:4500/projects/5facb7e617bf6c32c037ef10/collections?collectionName=sampleCollections4 HTTP/1.1
 
 ### 프로젝트 컬렉션 document 모두 찾기
-GET http://localhost:4500/projects/5fa093a34d65963234bdeba7/sampleCollection/document HTTP/1.1
+GET http://localhost:4500/projects/5facb7e617bf6c32c037ef10/playus_secret_validate_collection/document HTTP/1.1
 
 ### 프로젝트 컬렉션에 document 추가
-POST http://localhost:4500/projects/5fa093a34d65963234bdeba7/sampleCollection/document HTTP/1.1
+POST http://localhost:4500/projects/5facb7e617bf6c32c037ef10/testCollection/document HTTP/1.1
 Content-Type: application/json
 
-[
-    {
-        "name" : "a",
-        "age" : "12"
-    },
-    {
-        "name" : "b",
-        "age" : "13"
-    }
-]
+{
+    "name": "lee"
+}
 
 ### 프로젝트 컬렉션 document id로 제거
 DELETE  http://localhost:4500/projects/5fa093a34d65963234bdeba7/sampleCollection/document?documentId=5fab84663b019609a0ed96dc HTTP/1.1
